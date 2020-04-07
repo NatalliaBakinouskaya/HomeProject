@@ -167,19 +167,21 @@ function computeRanks(number, games) {
         }
         else elem[2] = index + 1;
          
-      })
-      .sort((a, b) => a[0] - b[0]);
+      });
+      tab.sort((a, b) => a[0] - b[0]);
+      console.log(tab);
       tab = tab.map((elem) => elem[2]);
       return tab; 
     }
     findTeams();
     makeTable(teams,games);
     let tableFull = table.slice();
+    // console.log(tableFull);
 
     while (check < 1){
       findSame(tableFull);
     }
-    
+    console.log(tableFull);
     return makeOrder(tableFull);
     
 }
