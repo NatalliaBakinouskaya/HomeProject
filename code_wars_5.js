@@ -68,6 +68,13 @@ function computeRanks(number, games) {
     let check = 0;
     let k = 0.0000001;
 
+    function listTeams (num){
+      for(let i = 0; i < num; i++){
+       teams.push(i);
+      }
+      return teams;
+  }
+
     function findTeams (){
         games.map(function(elem){
             
@@ -169,11 +176,12 @@ function computeRanks(number, games) {
          
       });
       tab.sort((a, b) => a[0] - b[0]);
-      console.log(tab);
+      
       tab = tab.map((elem) => elem[2]);
       return tab; 
     }
-    findTeams();
+    
+    listTeams(number);
     makeTable(teams,games);
     let tableFull = table.slice();
     // console.log(tableFull);
@@ -181,7 +189,7 @@ function computeRanks(number, games) {
     while (check < 1){
       findSame(tableFull);
     }
-    console.log(tableFull);
+    
     return makeOrder(tableFull);
     
 }
