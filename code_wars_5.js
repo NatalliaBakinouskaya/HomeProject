@@ -68,24 +68,12 @@ function computeRanks(number, games) {
     let check = 0;
     let k = 0.0000001;
 
-    function listTeams (num){
+    function findTeams (num){
       for(let i = 0; i < num; i++){
        teams.push(i);
       }
       return teams;
   }
-
-    function findTeams (){
-        games.map(function(elem){
-            
-            for (let i = 0; i <= 1; i++){
-               if (teams.indexOf(elem[i]) < 0){
-                 teams.push (elem[i]);
-               }
-            }
-        })
-        return teams;
-    }
 
     function makeTable (list, games){
         table = list.map(function(elem, index ){
