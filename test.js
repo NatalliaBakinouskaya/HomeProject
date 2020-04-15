@@ -1,4 +1,5 @@
 function computeRanks(number, games) {
+  let start = Date.now();
   let teams = [];
   let table = [];
   let check = 0;
@@ -113,7 +114,8 @@ function computeRanks(number, games) {
   while (check < 1){
     findSame(tableFull);
   }
-  
+  let end = Date.now();
+    console.log(end - start);
   return makeOrder(tableFull);
   
 }

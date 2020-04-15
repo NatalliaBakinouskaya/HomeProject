@@ -63,87 +63,88 @@
 // In this example you have to return the array [5, 1, 1, 3, 4, 6].
 
 function computeRanks(number, games) {
-  let start = Date.now();
-    let teams = [];
+    let start = Date.now();
+
+    let teams;
     let table;
     let check = 0;
     let k = 0.0000001;
-
-    function findTeams (num){
-      for(let i = 0; i < num; i++){
-       teams.push(i);
+    
+    function findTeams(fil){
+      teams = [];
+      switch(fil){
+       case 1: 
+         for(let i = 0; i < number; i++){
+         teams.push(i);
+         }
+         break;
+       case -1: 
+         for(let i = 0; i < number; i++){
+         teams.push(fil);
+         }
+         break;
       }
-      // console.log(teams);
       return teams;
-  }
-
-    function makeTable (list){
-        table = [];
-      // let start = Date.now();
-        table = list.map(function(elem, index ){
-            return table[index] = [elem, 0];
-           
-            
-        })
+    }
+    
+    function makeBlankTable(){
+      table = [];
+      table = teams.map(function(elem, index ){
+      return table[index] = [elem, 0];
+      })
+    }
+    function makeFilledTable (){
+        
         games.map(function(elem, index, arr){
            
             for (let i = 0; i <= 1; i++){
-                        
-            let sign = i > 0 ? -1: 1;
-            let points = (elem[2] - elem[3]) * sign  > 0 ? 2: (elem[2] - elem[3]) * sign < 0 ? 0: 1;
-            let scoringD = (elem[2] - elem[3]) * sign;
-            let goals = i < 1? elem[2]: elem[3];
-            
-                if (list.length == number){
-
-                  // console.log("nonono");
-                    
-                  table[elem[i]][1] += points * 1000000 + scoringD * 1000 + goals;
-                  // console.log(table);
+                
+                if (teams[elem[0]] > -1 && teams[elem[1]] > -1 ){
+                  let sign = i > 0 ? -1: 1;
+                  
+                  table[elem[i]][1] += ((elem[2] - elem[3]) * sign  > 0 ? 2: (elem[2] - elem[3]) * sign < 0 ? 0: 1) * 1000000 + ((elem[2] - elem[3]) * sign) * 1000 + (i < 1? elem[2]: elem[3]);
                 }
-                else if (teams.indexOf(elem[i]) > -1 && teams.indexOf(elem[i + sign]) > -1){
-                    table[teams.indexOf(elem[i])][1] += points * 1000000 + scoringD * 1000 + goals;
-                    // table[teams.indexOf(elem[i + sign])][1] += points * 1000000 + scoringD * 1000 + goals;
-                    console.log(elem, "first and second",table);
-                    // break;
+                else {
+                  break;
                  }
-                
-                
-
             }
-            
-        })
-           
-       table = table.sort((a, b) => b[1] - a[1]);
-       teams = [];
-      //  let end = Date.now();
-      //  console.log(end - start);
-      // console.log(table);
-      return table;
+        })    
+        return table.sort((a, b) => b[1] - a[1]);
+      
     }
     function findSame(tab){
-      // let teams = [];
+      
+      findTeams(-1);
       
       
       tab.map(function(elem, index, arr){
         
         
         if(index != arr.length - 1 && elem[1] == arr[index+1][1]){
+            teams[elem[0]] = elem[0];
             
-            teams.push(elem[0]);
+           
         }
         else if ((index == arr.length - 1 || index != 0 && elem[1] != arr[index+1][1]) && elem[1] == arr[index-1][1] ){
          
+            teams[elem[0]] = elem[0];
             
-            teams.push(elem[0]);
-            
-            makeTable(teams);
-            console.log(table);
-            
+            makeBlankTable();
+            makeFilledTable();
+           
+
+            table = table.filter(function(elem){
+             if(elem[0] > -1){
+               return elem;
+             }
+            });
+          
+            findTeams(-1);
+          
             if (table[0][1] == table[table.length - 1][1]){
                 
                 check = 1;
-
+               
             }
             else {
              
@@ -151,11 +152,12 @@ function computeRanks(number, games) {
                 if(index != 0 && elem[1] == array[index - 1][1]){
                   
                   check = 0;
+                  
                 }
                  
               })
             }
-            
+           
             tab.map(function(elem, index){
               for(let i = 0; i < table.length; i++){
                   if(elem[0] == table[i][0]){
@@ -164,10 +166,9 @@ function computeRanks(number, games) {
               }
             
             });
-            
-            table = [];
-            // teams = [];
            
+            table = [];
+            
         }
      
       });
@@ -176,7 +177,7 @@ function computeRanks(number, games) {
       
   }
     function makeOrder(tab){
-      // let start = Date.now();
+      
       tab.map(function(elem, index, arr){
         if (index != 0 && elem[1] == arr[index - 1][1]){
           elem[2] = arr[index - 1][2];
@@ -187,30 +188,27 @@ function computeRanks(number, games) {
       tab.sort((a, b) => a[0] - b[0]);
       
       tab = tab.map((elem) => elem[2]);
-      // let end = Date.now();
-      // console.log(end - start);
+      
       return tab; 
     }
     
-    findTeams(number);
-    makeTable(teams);
+    findTeams(1);
+    makeBlankTable();
+   
+    makeFilledTable();
+    
     let tableFull = table.slice();
-    // teams = [];
-    console.log(check);
+    
    
     while (check < 1){
       findSame(tableFull);
     }
+    
     let end = Date.now();
     console.log(end - start);
     return makeOrder(tableFull);
-    return tableFull;
-  //   [ [ 1, 7003007.10000001 ],
-  // [ 2, 7003007.10000001 ],
-  // [ 3, 3999007.2000005 ],
-  // [ 4, 3999007.20000042 ],
-  // [ 0, 3999007.2000004 ],
-  // [ 5, 3997004 ] ]
+   
+    
 }
 console.log(computeRanks(6, 
          [[0, 5, 1, 1],  
