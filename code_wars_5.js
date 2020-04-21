@@ -65,28 +65,25 @@
 function computeRanks(number, games) {
     let start = Date.now();
 
-    let teams;
+    let teams = [];
     let table;
     let check = 0;
     let k = 0.0000001;
     
-    function findTeams(fil){
-      teams = [];
-      switch(fil){
-       case 1: 
+    function findTeams(){
+      
          for(let i = 0; i < number; i++){
-         teams.push(i);
+          teams[i] = i;
          }
-         break;
-       case -1: 
-         for(let i = 0; i < number; i++){
-         teams.push(fil);
-         }
-         break;
-      }
       return teams;
     }
-    
+    function listTeams(){
+      
+      for(let i = 0; i < number; i++){
+      teams[i] = -1;
+      }
+   return teams;
+ }
     function makeBlankTable(){
       table = [];
       table = teams.map(function(elem, index ){
@@ -108,13 +105,13 @@ function computeRanks(number, games) {
                   break;
                  }
             }
-        })    
+        });    
         return table.sort((a, b) => b[1] - a[1]);
       
     }
     function findSame(tab){
       
-      findTeams(-1);
+      listTeams();
       
       
       tab.map(function(elem, index, arr){
@@ -131,15 +128,22 @@ function computeRanks(number, games) {
             
             makeBlankTable();
             makeFilledTable();
-           
+            listTeams();
 
-            table = table.filter(function(elem){
-             if(elem[0] > -1){
-               return elem;
-             }
-            });
-          
-            findTeams(-1);
+            // table = table.filter(function(elem){
+            //  if(elem[0] > -1){
+            //    return elem;
+            //  }
+            // });
+
+            for(let i = 0; i < table.length; i++){
+              if (table[i][0] == -1){
+                table = table.slice(0, i)
+                // console.log(table);
+              }
+            }
+            // console.log(table);
+            // findTeams(-1);
           
             if (table[0][1] == table[table.length - 1][1]){
                 
@@ -192,7 +196,7 @@ function computeRanks(number, games) {
       return tab; 
     }
     
-    findTeams(1);
+    findTeams();
     makeBlankTable();
    
     makeFilledTable();
