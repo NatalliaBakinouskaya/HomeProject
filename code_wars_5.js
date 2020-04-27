@@ -63,12 +63,14 @@
 // In this example you have to return the array [5, 1, 1, 3, 4, 6].
 
 function computeRanks(number, games) {
-    let start = Date.now();
+    // let start = Date.now();
+    console.log("number, games: ", number, games )
 
     let teams = [];
     let table;
     let check = 0;
-    let k = 0.0000001;
+    let check2 = 0;
+    let k = 0.1;
     
     function findTeams(){
       
@@ -91,6 +93,8 @@ function computeRanks(number, games) {
       })
     }
     function makeFilledTable (){
+      let start = Date.now();
+
         
         games.map(function(elem, index, arr){
            
@@ -99,17 +103,21 @@ function computeRanks(number, games) {
                 if (teams[elem[0]] > -1 && teams[elem[1]] > -1 ){
                   let sign = i > 0 ? -1: 1;
                   
-                  table[elem[i]][1] += ((elem[2] - elem[3]) * sign  > 0 ? 2: (elem[2] - elem[3]) * sign < 0 ? 0: 1) * 1000000 + ((elem[2] - elem[3]) * sign) * 1000 + (i < 1? elem[2]: elem[3]);
+                  table[elem[i]][1] += ((elem[2] - elem[3]) * sign  > 0 ? 2: (elem[2] - elem[3]) * sign < 0 ? 0: 1) * 1000 + ((elem[2] - elem[3]) * sign) * 100 + (i < 1? elem[2]: elem[3]);
                 }
                 else {
                   break;
                  }
             }
         });    
+        let end = Date.now();
+        console.log("maketable", end - start);
         return table.sort((a, b) => b[1] - a[1]);
       
     }
     function findSame(tab){
+      let start = Date.now();
+      check2 = 1;
       
       listTeams();
       
@@ -117,12 +125,13 @@ function computeRanks(number, games) {
       tab.map(function(elem, index, arr){
         
         
-        if(index != arr.length - 1 && elem[1] == arr[index+1][1]){
+        if(elem[1] != 0 && index != arr.length - 1 && elem[1] == arr[index+1][1]){
             teams[elem[0]] = elem[0];
+            check2 = 0;
             
            
         }
-        else if ((index == arr.length - 1 || index != 0 && elem[1] != arr[index+1][1]) && elem[1] == arr[index-1][1] ){
+        else if (elem[1] != 0 && (index == arr.length - 1 || index != 0 && elem[1] != arr[index+1][1]) && elem[1] == arr[index-1][1] ){
          
             teams[elem[0]] = elem[0];
             
@@ -148,6 +157,7 @@ function computeRanks(number, games) {
             if (table[0][1] == table[table.length - 1][1]){
                 
                 check = 1;
+                // check2 = 1;
                
             }
             else {
@@ -156,6 +166,7 @@ function computeRanks(number, games) {
                 if(index != 0 && elem[1] == array[index - 1][1]){
                   
                   check = 0;
+                  // check2 = 0;
                   
                 }
                  
@@ -170,19 +181,31 @@ function computeRanks(number, games) {
               }
             
             });
-           
+            console.log("findsame", table, "check", check, "check2",check2);
             table = [];
+            console.log(tab);
             
         }
-     
+        // else if(check2 = 0){
+        //   check = 1;
+        // }
       });
       tab = tab.sort((a, b) => b[1] - a[1]);
-      k *= 0.0000001;
+      k *= 0.01;
+       let end = Date.now();
+       
       
   }
     function makeOrder(tab){
-      
+      // tab = tab.filter(function(elem){
+      //   if(elem[1] != 0){
+      //     return elem;
+      //   }
+        
+      // });
+      // console.log("filter", tab);
       tab.map(function(elem, index, arr){
+        
         if (index != 0 && elem[1] == arr[index - 1][1]){
           elem[2] = arr[index - 1][2];
         }
@@ -195,38 +218,79 @@ function computeRanks(number, games) {
       
       return tab; 
     }
-    
+    // listTeams();
     findTeams();
+    console.log(teams);
     makeBlankTable();
+    console.log(table);
    
     makeFilledTable();
     
     let tableFull = table.slice();
     
    
-    while (check < 1){
+    while (check < 1 && check2 <1){
       findSame(tableFull);
     }
     
-    let end = Date.now();
-    console.log(end - start);
+    // let end = Date.now();
+    // console.log(end - start);
     return makeOrder(tableFull);
+    return tableFull;
    
     
 }
-console.log(computeRanks(6, 
-         [[0, 5, 1, 1],  
-         [1, 4, 3, 1],  
-         [2, 3, 2, 2],  
-         [1, 5, 1, 2],   
-         [2, 0, 1, 1],   
-         [3, 4, 3, 2],   
-         [2, 5, 3, 1],   
-         [3, 1, 0, 1],   
-         [4, 0, 2, 1],   
-         [3, 5, 0, 0],   
-         [4, 2, 0, 1],  
-         [0, 1, 1, 2],   
-         [4, 5, 2, 0],   
-         [0, 3, 3, 2],   
-         [1, 2, 0, 0]]  ));
+// console.log(computeRanks(6, [ [ 0, 5, 1, 2 ],
+//   [ 1, 4, 0, 3 ],
+//   [ 2, 3, 2, 1 ],
+//   [ 1, 5, 1, 0 ],
+//   [ 2, 0, 2, 2 ],
+//   [ 3, 4, 3, 0 ],
+//   [ 2, 5, 3, 0 ],
+//   [ 3, 1, 0, 2 ],
+//   [ 4, 0, 1, 3 ] ]));
+  console.log(computeRanks(6, 
+    [[0, 5, 1, 1],  
+    [1, 4, 3, 1],  
+    [2, 3, 2, 2],  
+    [1, 5, 1, 2],   
+    [2, 0, 1, 1],   
+    [3, 4, 3, 2],   
+    [2, 5, 3, 1],   
+    [3, 1, 0, 1],   
+    [4, 0, 2, 1],   
+    [3, 5, 0, 0],   
+    [4, 2, 0, 1],  
+    [0, 1, 1, 2],   
+    [4, 5, 2, 0],   
+    [0, 3, 3, 2],   
+    [1, 2, 0, 0]]  ));
+  // console.log(computeRanks(8, [ [ 0, 7, 2, 0 ] ] ));
+  console.log(computeRanks(8, [ [ 0, 7, 0, 0 ],
+    [ 1, 6, 2, 2 ],
+    [ 2, 5, 0, 0 ],
+    [ 3, 4, 0, 0 ],
+    [ 1, 7, 0, 0 ],
+    [ 2, 0, 0, 0 ],
+    [ 3, 6, 0, 0 ],
+    [ 4, 5, 0, 0 ],
+    [ 2, 7, 2, 2 ],
+    [ 3, 1, 0, 0 ],
+    [ 4, 0, 0, 0 ],
+    [ 5, 6, 0, 0 ],
+    [ 3, 7, 0, 0 ],
+    [ 4, 2, 0, 0 ],
+    [ 5, 1, 1, 1 ],
+    [ 6, 0, 0, 0 ],
+    [ 4, 7, 2, 2 ],
+    [ 5, 3, 1, 3 ],
+    [ 6, 2, 0, 0 ],
+    [ 0, 1, 1, 1 ],
+    [ 5, 7, 0, 0 ],
+    [ 6, 4, 2, 2 ],
+    [ 0, 3, 3, 1 ],
+    [ 1, 2, 0, 0 ],
+    [ 6, 7, 0, 0 ],
+    [ 0, 5, 0, 2 ],
+    [ 1, 4, 0, 0 ],
+    [ 2, 3, 0, 0 ] ] ));
