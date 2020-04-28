@@ -68,7 +68,7 @@ function computeRanks(number, games) {
     let table;
     let check = 0;
     let check2 = 0;
-    let k = 0.01;
+    let k = 0.0001;
     
     function findTeams(){
       
@@ -182,7 +182,7 @@ function computeRanks(number, games) {
         
       });
       
-      k *= 0.01;
+      k *= 0.0001;
       
   }
     function makeOrder(tab){
