@@ -66,165 +66,178 @@ function computeRanks(number, games) {
     
     let teams = [];
     let table;
-    let check = 0;
-    let check2 = 0;
-    let k = 0.0001;
+    let filteredGames = [];
+    let check = 1;
     
     function findTeams(){
       
-         for(let i = 0; i < number; i++){
+      for(let i = 0; i < number; i++){
           teams[i] = i;
          }
       return teams;
     }
+
     function listTeams(){
       
       for(let i = 0; i < number; i++){
       teams[i] = -1;
       }
-   return teams;
+      return teams;
  }
+
     function makeBlankTable(){
       table = [];
       table = teams.map(function(elem, index ){
-      return table[index] = [elem, 0];
-      })
+      return table[index] = [elem, 0, 0, 0];
+      });
     }
-    function makeFilledTable (){
-       games.map(function(elem, index, arr){
-           
-            for (let i = 0; i <= 1; i++){
-                
-                if (teams[elem[0]] > -1 && teams[elem[1]] > -1 ){
-                  let sign = i > 0 ? -1: 1;
-                  
-                  table[elem[i]][1] += ((elem[2] - elem[3]) * sign  > 0 ? 2: (elem[2] - elem[3]) * sign < 0 ? 0: 1) * 10000 + ((elem[2] - elem[3]) * sign) * 100 + (i < 1? elem[2]: elem[3]);
-                }
-                else {
-                  break;
-                 }
-            }
-        });    
-        table.sort((a, b) => b[1] - a[1]);
-        for(let i = 0; i < table.length; i++){
-          if (table[i][0] == -1){
-            table = table.slice(0, i)
-            
-          }
-        }
-       
-        table.map(function(elem, index, arr){
-        
-          if (index != 0 && elem[1] == arr[index - 1][1]){
-            elem[2] = arr[index - 1][2];
-          }
-          else elem[2] = arr.length - index;
-           
-        });
-        table.sort((a, b) => b[1] - a[1]);
-        
-        table = table.map((elem) => [elem[0], elem[2]]);
-       
-        return table; 
-      
-    }
-    function findSame(tab){
-      check2 = 1;
-      
-      listTeams();
-      tab.map(function(elem, index, arr){
-        
-        
-        if(elem[1] != 0 && index != arr.length - 1 && elem[1] == arr[index+1][1]){
-            teams[elem[0]] = elem[0];
-            check2 = 0;
-            
-           
-        }
-        else if (elem[1] != 0 && (index == arr.length - 1 || index != 0 && elem[1] != arr[index+1][1]) && elem[1] == arr[index-1][1] ){
-         
-            teams[elem[0]] = elem[0];
-            
-            makeBlankTable();
-            makeFilledTable();
-            listTeams();
 
-            if (table.length < 1 || table[0][1] == table[table.length - 1][1]){
-                
-                check = 1;
-                
-            }
-            else {
-             
-              table.map(function(elem,index,array){
-                if(index != 0 && elem[1] == array[index - 1][1]){
-                  
-                  check = 0;
-                 
-                }
-                 
-              })
-            }
-           
-            tab.map(function(elem, index){
-              for(let i = 0; i < table.length; i++){
-                  if(elem[0] == table[i][0]){
-                      elem[1] = elem[1] + table[i][1] * k;
-                  }
-              }
-            
-            });
-            
-            table = [];
-            tab = tab.sort((a, b) => b[1] - a[1]);
- 
-        }
+    function makeFilledTable (gametable){
+      return  gametable.map(function (elem, index, arr){
+       if(elem[2] > elem[3]){
         
+         table[elem[0]][1] += 2;
+        
+       }
+       else if(elem[2] < elem[3]){
+        
+        table[elem[1]][1] += 2;
+       }
+       else{
+        table[elem[0]][1] += 1;
+        table[elem[1]][1] += 1;
+      }
+      table[elem[0]][2] += elem[2] - elem[3];
+      table[elem[0]][3] += elem[2];
+      table[elem[1]][2] += elem[3] - elem[2];
+      table[elem[1]][3] += elem[3];
+     
+
       });
-      
-      k *= 0.0001;
-      
-  }
-    function makeOrder(tab){
-    
-      tab.map(function(elem, index, arr){
-        
-        if (index != 0 && elem[1] == arr[index - 1][1]){
-          elem[2] = arr[index - 1][2];
+    }
+
+    function sortFilledTable(){
+      table.sort(function(a, b) {
+        if (a[1] == b[1] && a[2] == b[2]){
+            return b[3] - a[3];        
         }
-        else elem[2] = index + 1;
+       
+        else 
+        if (a[1] == b[1]){
+            return b[2] - a[2];        
+        }
+        else 
+        return b[1] - a[1];
+
+    })
+      // return table.sort(function(a, b) {
+      //   return b[1] - a[1];
+      // })
+      //   .sort(function(a, b) {
+      //     if (a[1] == b[1]){
+      //       return b[2] - a[2];        
+      //   }
+      //    else 
+      //    return b[1] - a[1];
+      // })
+        // .sort(function(a, b) {
+        //   if (a[1] == b[1] && a[2] == b[2]){
+        //     return b[3] - a[3]        
+        // }
+        //  else 
+        //  return b[2] - a[2];
+      // });
+       
+
+    }
+    function makeOrder(){
+      table.map(function(elem, index, arr){
+        
+        if (index != 0 && elem[1] == arr[index - 1][1] && elem[2] == arr[index - 1][2] && elem[3] == arr[index - 1][3] ){
+          elem[4] = arr[index - 1][4];
+          check = 100;
+        }
+        else elem[4] = index + 1;
          
       });
-      tab.sort((a, b) => a[0] - b[0]);
-      
-      tab = tab.map((elem) => elem[2]);
-      
-      return tab; 
+      table = table.map((elem) => [elem[0], elem[4]]);
+      return table; 
     }
+
+
+    function searchSame(tab){
+      listTeams();
+      let k;
+      
+      tab.map(function(elem, index, arr){
+        if (index != tab.length -1 && elem[1] == arr[index + 1][1]){
+          teams[elem[0]] = elem[0];
+        }
+        else if ((index == tab.length -1  || elem[1] != arr[index + 1][1]) && index != 0   && elem[1] == arr[index - 1][1]){
+          teams[elem[0]] = elem[0];
+          k = index + 1;
+            
+          filterGames(games);
+          makeBlankTable();
+          makeFilledTable(filteredGames);
+          trancateTable();
+          sortFilledTable(table);
+          makeOrder();
+             
+          if (table.length > 2 && table[0][1] != table[table.length - 1][1] && check > 1){
+              // console.log("recursion", table, tab)
+              check = 0;
+              table = searchSame(table);
+          }
+       
+          pastTable(tab, k);
+  
+        }
+         
+      });
+      
+      return tab;
+    }
+    function filterGames(){
+     
+      filteredGames = games.filter(function(elem){
+        if (teams.indexOf(elem[0]) >= 0 && teams.indexOf(elem[1]) >= 0){
+        return elem;
+        }
+      });
+    }
+    function trancateTable(){
+      table = table.filter(function(elem){
+        if(elem[0] > -1){
+          return elem;
+        }
+      });
+    }
+    function pastTable(t, kk){
+      // console.log("past table", table, t)
+      listTeams();
+      let startpoint = kk - table.length;
+      for (let i = startpoint; i < table.length + startpoint; i++){
+        table[i - startpoint][1] += startpoint;
+        t[i] = table[i-startpoint];
+      }
+      return t;
+    }
+// -----------------------
     
     findTeams();
-    
     makeBlankTable();
-    
-    makeFilledTable();
-   
-    let tableFull = table.slice();
-    
-    while (check < 1 && check2 <1){
-      findSame(tableFull);
-    }
-   
-    return makeOrder(tableFull);
+    makeFilledTable(games);
+    // console.log("origin u÷nfiltered table", table);
+    sortFilledTable(table);
+    // console.log("origin filtered ÷table", table);
+    makeOrder(table);
+    let filledTable = table.slice();
+    searchSame(filledTable);
+    return filledTable.sort((a, b) => a[0] - b[0])
+    .map((elem) => elem[1]);    
 }
-// console.log(computeRanks(6, [ [ 0, 5, 1, 2 ],
-//   [ 1, 4, 0, 3 ],
-//   [ 2, 3, 2, 1 ],
-//   [ 1, 5, 1, 0 ],
-//   [ 2, 0, 2, 2 ],
-//   [ 3, 4, 3, 0 ],
-//   [ 2, 5, 3, 0 ],
-//   [ 3, 1, 0, 2 ],
-//   [ 4, 0, 1, 3 ] ]));
+//  
   // console.log(computeRanks(6, 
   //   [[0, 5, 1, 1],  
   //   [1, 4, 3, 1],  
@@ -240,8 +253,10 @@ function computeRanks(number, games) {
   //   [0, 1, 1, 2],   
   //   [4, 5, 2, 0],   
   //   [0, 3, 3, 2],   
-  //   [1, 2, 0, 0]]  ));
-  console.log(computeRanks(8, [ [ 0, 7, 2, 0 ] ] ));
+  //   [1, 2, 0, 0]] ));
+    // 5, 1, 1, 3, 4, 6
+  // console.log(computeRanks(8, [ [ 0, 7, 2, 0 ] ] ));
+  // [ 1, 2, 2, 2, 2, 2, 2, 8 ] [ 3, 4, 8, 1, 6, 2, 5, 7 ]
   // console.log(computeRanks(8, [ [ 0, 7, 0, 0 ],
   //   [ 1, 6, 2, 2 ],
   //   [ 2, 5, 0, 0 ],
@@ -270,3 +285,99 @@ function computeRanks(number, games) {
   //   [ 0, 5, 0, 2 ],
   //   [ 1, 4, 0, 0 ],
   //   [ 2, 3, 0, 0 ] ] ));
+    // ? [ 1, 1, 8, 1, 1, 1, 1, 7 ]
+  // console.log(computeRanks(20 , [ [ 0, 19, 0, 1 ],
+  //   [ 1, 18, 0, 0 ],
+  //   [ 2, 17, 0, 0 ],
+  //   [ 3, 16, 0, 1 ],
+  //   [ 4, 15, 0, 1 ],
+  //   [ 5, 14, 1, 1 ],
+  //   [ 6, 13, 0, 1 ],
+  //   [ 7, 12, 0, 1 ],
+  //   [ 8, 11, 0, 0 ],
+  //   [ 9, 10, 1, 1 ],
+  //   [ 1, 19, 0, 1 ],
+  //   [ 2, 0, 1, 0 ],
+  //   [ 3, 18, 1, 0 ],
+  //   [ 4, 17, 1, 1 ],
+  //   [ 5, 16, 1, 0 ],
+  //   [ 6, 15, 0, 1 ],
+  //   [ 7, 14, 1, 1 ],
+  //   [ 8, 13, 1, 1 ],
+  //   [ 9, 12, 0, 1 ],
+  //   [ 10, 11, 0, 1 ],
+  //   [ 2, 19, 1, 1 ],
+  //   [ 3, 1, 1, 1 ],
+  //   [ 4, 0, 0, 0 ],
+  //   [ 5, 18, 1, 1 ],
+  //   [ 6, 17, 0, 1 ],
+  //   [ 7, 16, 0, 0 ],
+  //   [ 8, 15, 1, 0 ],
+  //   [ 9, 14, 1, 0 ],
+  //   [ 10, 13, 1, 0 ],
+  //   [ 11, 12, 0, 0 ] ]));
+    // Expected: [19, 15, 5, 11, 17, 3, 20, 17, 4, 10, 9, 8, 2, 12, 14, 7, 13, 5, 15, 1], instead got: [19, 15, 5, 11, 17, 3, 20, 17, 4, 10, 9, 8, 2, 11, 14, 7, 13, 5, 15, 1]
+
+    console.log(computeRanks(38, [ [ 0, 37, 1, 0 ],
+    [ 1, 36, 1, 0 ],
+    [ 2, 35, 1, 1 ],
+    [ 3, 34, 0, 0 ],
+    [ 4, 33, 0, 0 ],
+    [ 5, 32, 0, 0 ],
+    [ 6, 31, 1, 0 ],
+    [ 7, 30, 0, 1 ],
+    [ 8, 29, 1, 0 ],
+    [ 9, 28, 1, 1 ],
+    [ 10, 27, 1, 1 ],
+    [ 11, 26, 1, 0 ],
+    [ 12, 25, 0, 1 ],
+    [ 13, 24, 0, 0 ],
+    [ 14, 23, 0, 1 ],
+    [ 15, 22, 0, 1 ],
+    [ 16, 21, 0, 0 ],
+    [ 17, 20, 0, 0 ],
+    [ 18, 19, 0, 1 ],
+    [ 1, 37, 0, 0 ],
+    [ 2, 0, 1, 0 ],
+    [ 3, 36, 1, 1 ],
+    [ 4, 35, 1, 0 ],
+    [ 5, 34, 0, 0 ],
+    [ 6, 33, 0, 1 ],
+    [ 7, 32, 0, 1 ],
+    [ 8, 31, 0, 1 ],
+    [ 9, 30, 0, 0 ],
+    [ 10, 29, 0, 1 ],
+    [ 11, 28, 1, 0 ],
+    [ 12, 27, 0, 1 ],
+    [ 13, 26, 0, 1 ],
+    [ 14, 25, 0, 0 ],
+    [ 15, 24, 1, 0 ],
+    [ 16, 23, 0, 1 ],
+    [ 17, 22, 0, 1 ],
+    [ 18, 21, 1, 0 ],
+    [ 19, 20, 0, 0 ],
+    [ 2, 37, 0, 0 ],
+    [ 3, 1, 0, 0 ],
+    [ 4, 0, 1, 1 ],
+    [ 5, 36, 1, 0 ],
+    [ 6, 35, 1, 1 ],
+    [ 7, 34, 0, 0 ],
+    [ 8, 33, 0, 1 ],
+    [ 9, 32, 1, 1 ],
+    [ 10, 31, 0, 1 ],
+    [ 11, 30, 0, 1 ],
+    [ 12, 29, 0, 1 ],
+    [ 13, 28, 1, 0 ],
+    [ 14, 27, 0, 1 ],
+    [ 15, 26, 0, 1 ],
+    [ 16, 25, 0, 1 ],
+    [ 17, 24, 1, 1 ],
+    [ 18, 23, 1, 1 ],
+    [ 19, 22, 0, 1 ],
+    [ 20, 21, 1, 1 ],
+    [ 3, 37, 1, 1 ],
+    [ 4, 2, 1, 1 ],
+    [ 5, 1, 0, 1 ],
+    [ 6, 0, 0, 0 ],
+    [ 7, 36, 1, 0 ]]));
+    // Expected: [15, 2, 8, 17, 8, 18, 15, 25, 31, 19, 33, 10, 38, 23, 35, 28, 35, 29, 19, 21, 21, 31, 1, 3, 30, 5, 14, 3, 33, 11, 5, 11, 11, 5, 24, 27, 37, 25], instead got: [14, 2, 7, 16, 7, 17, 14, 24, 31, 19, 33, 10, 38, 23, 35, 28, 35, 29, 19, 21, 21, 31, 1, 3, 30, 5, 13, 3, 33, 18, 9, 11, 11, 5, 26, 27, 37, 24]

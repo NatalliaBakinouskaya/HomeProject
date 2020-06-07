@@ -1,98 +1,119 @@
 function computeRanks(number, games) {
   let start = Date.now();
-  let teams = [];
-  let table = [];
+
+  let teams;
+  let table;
   let check = 0;
   let k = 0.0000001;
-
-  function findTeams (num){
-    for(let i = 0; i < num; i++){
-     teams.push(i);
+  
+  function findTeams(fil){
+    teams = [];
+    switch(fil){
+     case 1: 
+       for(let i = 0; i < number; i++){
+       teams.push(i);
+       }
+       break;
+     case -1: 
+       for(let i = 0; i < number; i++){
+       teams.push(fil);
+       }
+       break;
     }
     return teams;
-}
-
-  function makeTable (list, games){
-      table = list.map(function(elem, index ){
-          return table[index] = [elem, 0];
-         
-          
-      })
+  }
+  
+  function makeBlankTable(){
+    table = [];
+    table = teams.map(function(elem, index ){
+    return table[index] = [elem, 0];
+    })
+  }
+  function makeFilledTable (){
+      
       games.map(function(elem, index, arr){
          
           for (let i = 0; i <= 1; i++){
-                      
-          let sign = i > 0 ? -1: 1;
-          let points = (elem[2] - elem[3]) * sign  > 0 ? 2: (elem[2] - elem[3]) * sign < 0 ? 0: 1;
-          let scoringD = (elem[2] - elem[3]) * sign;
-          let goals = i < 1? elem[2]: elem[3];
-          
-          if (list.indexOf(elem[0]) > -1 && list.indexOf(elem[1]) > -1){
-
-                  
-              table[list.indexOf(elem[i])][1] += points * 1000000 + scoringD * 1000 + goals;
+              
+              if (teams[elem[0]] > -1 && teams[elem[1]] > -1 ){
+                let sign = i > 0 ? -1: 1;
+                
+                table[elem[i]][1] += ((elem[2] - elem[3]) * sign  > 0 ? 2: (elem[2] - elem[3]) * sign < 0 ? 0: 1) * 1000000 + ((elem[2] - elem[3]) * sign) * 1000 + (i < 1? elem[2]: elem[3]);
               }
+              else {
+                break;
+               }
           }
-          
-      })
-         
-     table = table.sort((a, b) => b[1] - a[1]);
-     return table;
+      })    
+      return table.sort((a, b) => b[1] - a[1]);
+    
   }
   function findSame(tab){
-      let teams = [];
+    
+    findTeams(-1);
+    
+    
+    tab.map(function(elem, index, arr){
       
       
-      tab.map(function(elem, index, arr){
-        
-        
-        if(index != arr.length - 1 && elem[1] == arr[index+1][1]){
-            
-            teams.push(elem[0]);
-        }
-        else if ((index == arr.length - 1 || index != 0 && elem[1] != arr[index+1][1]) && elem[1] == arr[index-1][1] ){
+      if(index != arr.length - 1 && elem[1] == arr[index+1][1]){
+          teams[elem[0]] = elem[0];
+          
          
-            
-            teams.push(elem[0]);
-            
-            makeTable(teams,games);
-            
-            if (table[0][1] == table[table.length - 1][1]){
-                
-                check = 1;
+      }
+      else if ((index == arr.length - 1 || index != 0 && elem[1] != arr[index+1][1]) && elem[1] == arr[index-1][1] ){
+       
+          teams[elem[0]] = elem[0];
+          
+          makeBlankTable();
+          makeFilledTable();
+         
 
-            }
-            else {
+          table = table.filter(function(elem){
+           if(elem[0] > -1){
+             return elem;
+           }
+          });
+        
+          findTeams(-1);
+        
+          if (table[0][1] == table[table.length - 1][1]){
+              
+              check = 1;
              
-              table.map(function(elem,index,array){
-                if(index != 0 && elem[1] == array[index - 1][1]){
-                  
-                  check = 0;
-                }
-                 
-              })
-            }
-            
-            tab.map(function(elem, index){
-              for(let i = 0; i < table.length; i++){
-                  if(elem[0] == table[i][0]){
-                      elem[1] = elem[1] + table[i][1] * k;
-                  }
-              }
-            
-            });
-            
-            table = [];
-            teams = [];
+          }
+          else {
            
-        }
-     
-      });
-      tab = tab.sort((a, b) => b[1] - a[1]);
-      k *= 0.0000001;
-      
-  }
+            table.map(function(elem,index,array){
+              if(index != 0 && elem[1] == array[index - 1][1]){
+                
+                check = 0;
+                
+              }
+               
+            })
+          }
+         
+          tab.map(function(elem, index){
+            for(let i = 0; i < table.length; i++){
+                if(elem[0] == table[i][0]){
+                    elem[1] = elem[1] + table[i][1] * k;
+                }
+            }
+          
+          });
+         
+          table = [];
+          
+      }
+   
+    });
+    tab = tab.sort((a, b) => b[1] - a[1]);
+    k *= 0.0000001;
+    
+}
   function makeOrder(tab){
+    
     tab.map(function(elem, index, arr){
       if (index != 0 && elem[1] == arr[index - 1][1]){
         elem[2] = arr[index - 1][2];
@@ -103,35 +124,61 @@ function computeRanks(number, games) {
     tab.sort((a, b) => a[0] - b[0]);
     
     tab = tab.map((elem) => elem[2]);
+    
     return tab; 
   }
   
-  findTeams(number);
-  makeTable(teams,games);
+  findTeams(1);
+  makeBlankTable();
+ 
+  makeFilledTable();
+  
   let tableFull = table.slice();
   // console.log(tableFull);
-
-  while (check < 1){
-    findSame(tableFull);
-  }
-  let end = Date.now();
-    console.log(end - start);
+  // console.log(check);
+  // if (check < 1){
+  //   check += 1;
+  //   findSame(tableFull);
+  // }
+  // console.log("ddd");
+  // let end = Date.now();
+  // console.log(end - start);
+  findSame(tableFull);
+  findSame(tableFull);
+  findSame(tableFull);
+  findSame(tableFull);
+  findSame(tableFull);
+  findSame(tableFull);
+  findSame(tableFull);
   return makeOrder(tableFull);
+ 
   
 }
-console.log(computeRanks(6, 
-       [[0, 5, 1, 1],  
-       [1, 4, 3, 1],  
-       [2, 3, 2, 2],  
-       [1, 5, 1, 2],   
-       [2, 0, 1, 1],   
-       [3, 4, 3, 2],   
-       [2, 5, 3, 1],   
-       [3, 1, 0, 1],   
-       [4, 0, 2, 1],   
-       [3, 5, 0, 0],   
-       [4, 2, 0, 1],  
-       [0, 1, 1, 2],   
-       [4, 5, 2, 0],   
-       [0, 3, 3, 2],   
-       [1, 2, 0, 0]]  ));
+console.log(computeRanks(8, [ [ 0, 7, 0, 0 ],
+  [ 1, 6, 2, 2 ],
+  [ 2, 5, 0, 0 ],
+  [ 3, 4, 0, 0 ],
+  [ 1, 7, 0, 0 ],
+  [ 2, 0, 0, 0 ],
+  [ 3, 6, 0, 0 ],
+  [ 4, 5, 0, 0 ],
+  [ 2, 7, 2, 2 ],
+  [ 3, 1, 0, 0 ],
+  [ 4, 0, 0, 0 ],
+  [ 5, 6, 0, 0 ],
+  [ 3, 7, 0, 0 ],
+  [ 4, 2, 0, 0 ],
+  [ 5, 1, 1, 1 ],
+  [ 6, 0, 0, 0 ],
+  [ 4, 7, 2, 2 ],
+  [ 5, 3, 1, 3 ],
+  [ 6, 2, 0, 0 ],
+  [ 0, 1, 1, 1 ],
+  [ 5, 7, 0, 0 ],
+  [ 6, 4, 2, 2 ],
+  [ 0, 3, 3, 1 ],
+  [ 1, 2, 0, 0 ],
+  [ 6, 7, 0, 0 ],
+  [ 0, 5, 0, 2 ],
+  [ 1, 4, 0, 0 ],
+  [ 2, 3, 0, 0 ] ] ));
