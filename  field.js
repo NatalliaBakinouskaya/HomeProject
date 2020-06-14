@@ -4,7 +4,7 @@
 
 function sortFilledTable(table){
 
-
+let kontrol;
 
     return table
     // .sort(function(a, b) {
@@ -19,6 +19,16 @@ function sortFilledTable(table){
     //     return b[1] - a[1];
     // })
     .sort(function(a, b) {
+        if (a[1] == b[1] && a[2] == b[2] && a[3] == b[3]){
+            kontrol = 100;
+            console.log(a,b);
+        }
+        else{
+            kontrol = 0;
+            console.log(kontrol);
+        }
+            
+       
         if (a[1] == b[1] && a[2] == b[2]){
             return b[3] - a[3];        
         }
