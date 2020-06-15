@@ -70,20 +70,14 @@ function computeRanks(number, games) {
   let check = 1;
   
   function findTeams(){
-    
-    for(let i = 0; i < number; i++){
-        teams[i] = i;
-       }
+    teams = Array.from({length: number}, (elem, i) => i);
     return teams;
   }
 
   function listTeams(){
-    
-    for(let i = 0; i < number; i++){
-    teams[i] = -1;
-    }
+    teams = Array.from({length: number});
     return teams;
-}
+  }
 
   function makeBlankTable(){
     table = [];
@@ -94,25 +88,20 @@ function computeRanks(number, games) {
 
   function makeFilledTable (gametable){
     return  gametable.map(function (elem, index, arr){
-     if(elem[2] > elem[3]){
-      
-       table[elem[0]][1] += 2;
-      
-     }
-     else if(elem[2] < elem[3]){
-      
-      table[elem[1]][1] += 2;
-     }
-     else{
-      table[elem[0]][1] += 1;
-      table[elem[1]][1] += 1;
-    }
-    table[elem[0]][2] += elem[2] - elem[3];
-    table[elem[0]][3] += elem[2];
-    table[elem[1]][2] += elem[3] - elem[2];
-    table[elem[1]][3] += elem[3];
-   
-
+      if(elem[2] > elem[3]){
+        table[elem[0]][1] += 2;
+      }
+      else if(elem[2] < elem[3]){
+        table[elem[1]][1] += 2;
+      }
+      else{
+        table[elem[0]][1] += 1;
+        table[elem[1]][1] += 1;
+      }
+      table[elem[0]][2] += elem[2] - elem[3];
+      table[elem[0]][3] += elem[2];
+      table[elem[1]][2] += elem[3] - elem[2];
+      table[elem[1]][3] += elem[3];
     });
   }
 
@@ -121,35 +110,14 @@ function computeRanks(number, games) {
       if (a[1] == b[1] && a[2] == b[2]){
           return b[3] - a[3];        
       }
-     
-      else 
-      if (a[1] == b[1]){
+      else if (a[1] == b[1]){
           return b[2] - a[2];        
       }
       else 
-      return b[1] - a[1];
-
-  })
-    // return table.sort(function(a, b) {
-    //   return b[1] - a[1];
-    // })
-    //   .sort(function(a, b) {
-    //     if (a[1] == b[1]){
-    //       return b[2] - a[2];        
-    //   }
-    //    else 
-    //    return b[1] - a[1];
-    // })
-      // .sort(function(a, b) {
-      //   if (a[1] == b[1] && a[2] == b[2]){
-      //     return b[3] - a[3]        
-      // }
-      //  else 
-      //  return b[2] - a[2];
-    // });
-     
-
+          return b[1] - a[1];
+    });
   }
+
   function makeOrder(){
     table.map(function(elem, index, arr){
       
@@ -164,7 +132,6 @@ function computeRanks(number, games) {
     return table; 
   }
 
-
   function searchSame(tab){
     listTeams();
     let k;
@@ -177,7 +144,7 @@ function computeRanks(number, games) {
         teams[elem[0]] = elem[0];
         k = index + 1;
           
-        filterGames(games);
+        filterGames();
         makeBlankTable();
         makeFilledTable(filteredGames);
         trancateTable();
@@ -185,7 +152,6 @@ function computeRanks(number, games) {
         makeOrder();
            
         if (table.length > 2 && table[0][1] != table[table.length - 1][1] && check > 1){
-            // console.log("recursion", table, tab)
             check = 0;
             table = searchSame(table);
         }
@@ -198,31 +164,31 @@ function computeRanks(number, games) {
     
     return tab;
   }
+
   function filterGames(){
-    let ts = [];
-    console.log("teams", teams)
+    let shortListedTeams = [];
     teams.map(function(elem){
       if(elem >= 0){
-        ts.push(elem);
+        shortListedTeams.push(elem);
       }
-    
     });
-    console.log("teams + ts", teams, ts);
     filteredGames = games.filter(function(elem){
-      if (ts.indexOf(elem[0]) >= 0 && ts.indexOf(elem[1]) >= 0){
+      if (shortListedTeams.indexOf(elem[0]) >= 0 && shortListedTeams.indexOf(elem[1]) >= 0){
       return elem;
       }
     });
   }
+
   function trancateTable(){
     table = table.filter(function(elem){
-      if(elem[0] > -1){
+      if(elem[0] >= 0){
         return elem;
       }
     });
   }
+
   function pastTable(t, kk){
-    // console.log("past table", table, t)
+    
     listTeams();
     let startpoint = kk - table.length;
     for (let i = startpoint; i < table.length + startpoint; i++){
@@ -231,14 +197,11 @@ function computeRanks(number, games) {
     }
     return t;
   }
-// -----------------------
   
   findTeams();
   makeBlankTable();
   makeFilledTable(games);
-  // console.log("origin u÷nfiltered table", table);
   sortFilledTable(table);
-  // console.log("origin filtered ÷table", table);
   makeOrder(table);
   let filledTable = table.slice();
   searchSame(filledTable);
