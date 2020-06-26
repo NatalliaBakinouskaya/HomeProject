@@ -62,62 +62,158 @@
 // The given matrix with its contours shifted.
 
 function contoursShifting(matrix) {
+   let tempArray = matrix.map(function(arr) {
+      return arr.slice();
+  });
+   
    let start = 0,
    height = matrix.length,
    width = matrix[0].length,
-   midpoint = Math.ceil(Math.min(height, width) / 2),
-   tempArray = [];
-  
-//    console.log(start % 2, height, width, midpoint); 
+   midpoint = Math.ceil(Math.min(height, width) / 2);
+ 
    function RotateClockweise(){
-       
-      for(i = start; i < width - 1; i++){
-         tempArray.push(matrix[start][i]);
+      for(i = width -1; i > start; i--){
+         matrix[start][i] = tempArray[start][i - 1];
       }
-      
-      for(i = start; i < height -1 ; i++){
-        tempArray.push(matrix[i][width-1]);
+      for(i = start; i < width -1; i++){
+         matrix[height - 1][i] = tempArray[height -1][i + 1];
       }
-      
-      for(i = width - 1; i > start; i--){
-        tempArray.push(matrix[height - 1][i]);
+      for(i = start; i < height -1; i++){
+         matrix[i][start] = tempArray[i + 1][start];  
       }
       for(i = height - 1; i > start; i--){
-        tempArray.push(matrix[i][start]);
+         matrix[i][width -1] = tempArray[i - 1][width -1];  
       }
-   
-      tempArray.unshift(tempArray[tempArray.length -1]);
-      tempArray.pop();
-    //   .pop();
-    for(element of tempArray){
-        for(i = start; i < width - 1; i++){
-            matrix[start][i] = element;
-         }
-         
-         for(i = start; i < height -1 ; i++){
-           matrix[i][width-1] = element;
-         }
-         
-         for(i = width - 1; i > start; i--){
-           matrix[height - 1][i] = element;
-         }
-         for(i = height - 1; i >= start; i--){
-           matrix[i][start] = element;
-         }
-    }
-   
-      
-    }
-    // return matrix;
-  
-   RotateClockweise();
-    return matrix;
+      stepIn();
+      return matrix;
+   }
+
+   function RotateCounterClockweise(){
+      for(i = start; i < width -1; i++){
+         matrix[start][i] = tempArray[start][i + 1];
+      }
+      for(i = width -1; i > start; i--){
+         matrix[height - 1][i] = tempArray[height - 1][i - 1];
+      }
+      for(i = height - 1; i > start; i--){
+         matrix[i][start] = tempArray[i - 1][start];
+      }
+      for(i = start; i < height -1; i++){
+         matrix[i][width -1] = tempArray[i + 1][width -1];
+      }
+      stepIn();
+      return matrix ;  
+   }
+
+  function stepIn(){
+   start += 1;
+   width -= 1;
+   height -= 1;
   }
-console.log(contoursShifting([
-            [ 1,  2,  3,  4],
-            [ 5,  6,  7,  8],
-            [ 9, 10, 11, 12],
-            [13, 14, 15, 16],
-            [17, 18, 19, 20]
+
+  function FastFinishClockweise(){
+   if (height - start == 1){
+      for(i = width -1; i > start; i--){
+         matrix[start][i] = tempArray[start][i - 1];
+      }
+      matrix[start][start] = tempArray[start][width - 1];
+   }
+   if (width - start == 1){
+      for(i = height - 1; i > start; i--){
+         matrix[i][width -1] = tempArray[i - 1][width -1]; 
+      }
+      matrix[start][start] = tempArray[height - 1][start];
+   }
+   stepIn();
+   return matrix;
+  }
+
+  function FastFinishCounterClockweise(){
+   if (height - start == 1){
+      for(i = start; i < width -1; i++){
+         matrix[start][i] = tempArray[start][i + 1];
+      }
+      matrix[start][width - 1] = tempArray[start][start];
+   }
+   if (width - start == 1){
+      for(i = start; i < height -1; i++){
+         matrix[i][width -1] = tempArray[i + 1][width -1];
+      }
+      matrix[height - 1][start] = tempArray[start][start];
+   }
+   stepIn();
+   return matrix;
+  }
+  while(start < midpoint){
+      if (start % 2 === 0){
+         if(height - start == 1 || width - start == 1){
+            FastFinishClockweise();
+         } 
+         else{
+            RotateClockweise();
+         }
+      }
+      else {
+         if (start % 2 !== 0){
+            if(height - start == 1 || width - start == 1){
+               FastFinishCounterClockweise();
+            } 
+            else{
+               RotateCounterClockweise();
+            }
+         }
+      }
+   }
+   return matrix;
+  }
+// console.log(contoursShifting([
+//             [ 1,  2,  3,  4, ],
+//             [ 5,  6,  7,  8],
+//             [ 9, 10, 11, 12],
+//             [13, 14, 15, 16],
+//             [17, 18, 19, 20]
+
+// ]));
+// console.log(contoursShifting([
+//    [1, 5, 6]
+// ]));
+// console.log(contoursShifting([
+//    [1, 5, 6, 7, 1, 1],
+//    [8, 9, 10, 11, 2, 2],
+//    [12, 13, 14, 15, 3, 3],
+//    [16, 17, 18, 19, 4, 4],
+//    [20, 21, 22, 23, 5, 5]
    
-    ]));
+  
+
+// ]));
+// console.log(contoursShifting([
+//    [1, 5, 6, 7, 1],
+//    [8, 9, 10, 11, 2],
+//    [12, 13, 14, 15, 3],
+//    [16, 17, 18, 19, 4],
+//    [20, 21, 22, 23, 5],
+//    [24, 25, 26, 27, 6]
+   
+  
+
+// ]));
+// console.log(contoursShifting([
+//    [1],
+//    [8],
+//    [12],
+//    [164],
+//    [20],
+//    [24]
+   
+  
+
+// ]));
+console.log(contoursShifting([
+   [ 1,  2,  3 ],
+   [ 5,  6,  7],
+   [ 9, 10, 11],
+   [13, 14, 15],
+   [17, 18, 190]
+
+]));
