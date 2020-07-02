@@ -1,4 +1,13 @@
-
-a = [ 5, 1, 2 ];
-a.push(a.shift())
-console.log(a);
+const isPrime = (num) => {
+    let i = 1
+  
+    while (i++ < num - 1) {
+        console.log(i);
+      if (num % i === 0) {
+        return false
+      }
+    }
+  
+    return num > 1
+  }
+  console.log(isPrime(14067071));
