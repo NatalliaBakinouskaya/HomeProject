@@ -6,9 +6,7 @@
 
 function squareDigits(num){
    + num.toString().split('').map(element => element * element).join('');
-    //may the code be with you
-    console.log("123".charCodeAt(1));
-    return ˜"123".indexOf('2')
+    
   }
 
   console.log(squareDigits(6677));
