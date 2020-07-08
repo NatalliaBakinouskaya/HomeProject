@@ -26,6 +26,91 @@
 // Avoid creating an array whose memory footprint is roughly as big as the input text.
 // Avoid sorting the entire array of unique words.
 function topThreeWords(text) {
+    let arr = [];
+    let obj = {};
+    let result = [];
+    let min = 0;
+    let max_3 = [];
+    let mid = 1;
+
+    arr = text.toLowerCase().replace(/[\,\.\;\:\-\!\?]/gi, '').split(' ').sort();
+    // console.log(arr);
+    for(word of arr){
+        // console.log();
+        if(obj[word]){
+            obj[word] +=1;
+            if(obj[word] > max_3[max_3.length - 1]){
+                // console.log(word, obj[word],max_3 );
+                min = max_3[max_3.length - 1];
+                
+
+                
+                
+                if(result.includes(word)){
+                    result.splice(result.indexOf(word), 1);
+                    max_3.splice(max_3.indexOf(obj[word] -1), 1);
+                    // console.log('obj[word]', obj[word]);
+                    // console.log(word, obj[word],max_3,result );
+                }
+                else{
+                    max_3.pop(); result.pop();
+                }
+
+                if(obj[word] > max_3[0]){
+                    result.unshift(word);
+                    max_3.unshift(obj[word]);
+                }
+                else if(max_3[1] && obj[word] > max_3[1]){
+                    result.splice(1,0,word);
+                    max_3.splice(1,0,obj[word]);
+                }
+                else {
+                    result.push(word);
+                    max_3.push(obj[word]);
+
+                }
+                // console.log('fin', word, obj[word],result, max_3 );
+                // max_3[max_3.length - 1] = obj[word];
+                // max_3.sort((a,b)=> b - a);
+                
+                // result.length > 3? result.length = 3:result.length = result.length;
+                // console.log(word, obj[word],max_3,result );
+            }
+
+            // console.log('hohoh', word, obj[word]);
+           
+        }
+        else {
+            obj[word] = 1;
+            if(result.length < 3){
+            // console.log(word, obj[word],max_3 );
+            result.push(word);
+            max_3.push(obj[word]);
+            // console.log(word, obj[word],max_3, result );
+            }
+         
+         
+        
+       
+            // if(obj[word] >= max){
+
+            // if(result.indexOf(word) >= 0){
+            //         result.splice(result.indexOf(word), 1);
+            //     }
+            // result.unshift(word);
+            // max = obj[word];
+            // console.log(result);
+           
+        
+        }
+        
+        // result.length = 3;
+
+    }
+    console.log(max_3, result);
+    return result;
 
 }
-console.log(topThreeWords(text))
+console.log(topThreeWords("In a village of La Mancha, the name of which I have no desire to call tomind, there lived not long since one of those gentlemen that keep a lancein the lance-rack, an old buckler, a lean hack, and a greyhound focoursing. An olla of rather more beef than mutton, a salad on most nights, scraps on Saturdays, lentils on Fridays, and a pigeon or so extra on Sundays, made away with three-quarters of his income."))
+console.log(topThreeWords("e e e e DDD ddd DdD: ddd ddd aa aA Aa, bb cc cC e e e"));
+console.log(topThreeWords("  //wont won't won't"));
