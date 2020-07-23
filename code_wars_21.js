@@ -3,9 +3,13 @@
 
 
 
-    function fakeBin(x){
+    // function fakeBin(x){
         
-       x = x.split('').map(char => + char < 5?char = 0: char = 1).join('');
-      return x;
-    }
-    console.log(fakeBin('45385593107843568'))
+    //    x = x.split('').map(char => + char < 5?char = 0: char = 1).join('');
+    //   return x;
+    // }
+    // console.log(fakeBin('45385593107843568'))
+    function fakeBin(x) {
+        return x.replace(/\d/g, n => "0000011111"[n])
+      }
+      console.log(fakeBin('45385593107843568'))
