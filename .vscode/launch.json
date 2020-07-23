@@ -13,6 +13,16 @@
             ],
             "type": "pwa-node"
         },
+
+        {
+            "name": "Launch Program",
+            "program": "${workspaceFolder}/app.js",
+            "request": "launch",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "pwa-node"
+        },
         {
             "name": "Launch Chrome",
             "request": "launch",
@@ -52,7 +62,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/code_wars_20.js"
+            "program": "${workspaceFolder}/code_wars_21.js"
         }
     ]
 }

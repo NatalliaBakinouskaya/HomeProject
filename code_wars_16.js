@@ -37,6 +37,72 @@
 // Return the array of movements to execute to get out of the maze
 
 function escape(maze) {
-    // Have a nice sleep ;)
-    return [];
+  let finishArray = [];
+  let check = 'start not found';
+    function FindExitInRows(row){
+      
+      for(i = 0; i < maze[row].length; i++){
+
+        if(maze[row][i] == '<'|| maze[row][i] == '>'|| maze[row][i] == '^'|| maze[row][i] == 'v'){
+          check = 'start found';
+
+          finishArray.push([maze[row][i], row, i]);
+          break;
+        }
+        else if(maze[row][i] == ' ' && (i == maze[row].length - 1 || maze[row][i + 1] == '#')){
+          
+          finishArray.push([row,i]);
+        }
+        
+      }
+      return finishArray;
+    }
+
+    function FindExitInColumns(column){
+      
+      for(i = 1; i < maze.length -1; i++){
+       
+        if(maze[i][column] == '<'|| maze[i][column] == '>'|| maze[i][column] == '^'|| maze[i][column] == 'v'){
+          check = 'start found';
+
+          finishArray = ([maze[i][column], i, column]);
+          break;
+        }
+        else if(maze[i][column] == ' ' && (maze[i + 1][column] == '#')){
+          // console.log('found', i, maze[i][column]);
+          finishArray = [i,column];
+
+        }
+        
+      }
+      return finishArray;
+    }
+   
+   let temparr = [0,maze.length -1];
+   temparr.map(function(elem){
+    //  console.log(check);
+    if (check !== 'start found'){
+      return FindExitInRows(elem);
+    }
+   })
+   temparr = [0,maze[0].length - 1];
+   temparr.map(function(elem){
+    //  console.log(check);
+    if (check !== 'start found'){
+      return FindExitInColumns(elem);
+    }
+     
+   })
+   
+    // FindExitInRows(0);
+    // // console.log(maze.length -1);
+    // FindExitInRows(maze.length -1);
+    // FindExitInColumns(0);
+    // FindExitInColumns(maze[0].length - 1);
+    return finishArray;
   }
+  console.log(escape([
+    '# #',
+    ' ><',
+    '# #'
+  ]));
