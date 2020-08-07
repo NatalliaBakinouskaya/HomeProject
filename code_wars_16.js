@@ -37,72 +37,197 @@
 // Return the array of movements to execute to get out of the maze
 
 function escape(maze) {
-  let finishArray = [];
-  let check = 'start not found';
+  // console.log(maze.length - 1);
+  let exits = [];
+  let path = [];
+  function FindExit(){
+    let check = 'start not found';
     function FindExitInRows(row){
-      
       for(i = 0; i < maze[row].length; i++){
 
         if(maze[row][i] == '<'|| maze[row][i] == '>'|| maze[row][i] == '^'|| maze[row][i] == 'v'){
           check = 'start found';
 
-          finishArray.push([maze[row][i], row, i]);
+          exits.push([maze[row][i], row, i]);
           break;
         }
         else if(maze[row][i] == ' ' && (i == maze[row].length - 1 || maze[row][i + 1] == '#')){
-          
-          finishArray.push([row,i]);
+          // console.log('found in row',row, i, maze[row][i]);
+          exits.push([row,i]);
         }
         
       }
-      return finishArray;
+      return exits;
     }
 
     function FindExitInColumns(column){
       
       for(i = 1; i < maze.length -1; i++){
-       
+
         if(maze[i][column] == '<'|| maze[i][column] == '>'|| maze[i][column] == '^'|| maze[i][column] == 'v'){
           check = 'start found';
 
-          finishArray = ([maze[i][column], i, column]);
+          exits = ([maze[i][column], i, column]);
           break;
         }
         else if(maze[i][column] == ' ' && (maze[i + 1][column] == '#')){
-          // console.log('found', i, maze[i][column]);
-          finishArray = [i,column];
-
+          // console.log('found in column',column, i, maze[i][column]);
+          exits.push([i, column]);
         }
         
       }
-      return finishArray;
+      return exits;
     }
-   
-   let temparr = [0,maze.length -1];
-   temparr.map(function(elem){
-    //  console.log(check);
+  
+  [0,maze.length -1].forEach(function(elem){
     if (check !== 'start found'){
-      return FindExitInRows(elem);
+      FindExitInRows(elem);
     }
-   })
-   temparr = [0,maze[0].length - 1];
-   temparr.map(function(elem){
-    //  console.log(check);
+   });
+   [0,maze[0].length -1].forEach(function(elem){
+    //  console.log('elem', elem)
     if (check !== 'start found'){
-      return FindExitInColumns(elem);
+      FindExitInColumns(elem);
     }
-     
-   })
-   
-    // FindExitInRows(0);
-    // // console.log(maze.length -1);
-    // FindExitInRows(maze.length -1);
-    // FindExitInColumns(0);
-    // FindExitInColumns(maze[0].length - 1);
-    return finishArray;
+   });
   }
+  function FindPath(exit){
+    let step = exit;
+    
+    let check = "Path not found";
+    // let path = ([[step[0';'
+    let path = [];
+    let finish = "";
+    let crossroads = [];
+    // console.log("path", path);
+    // let movements = [[[step[0]+1][step[1]]], [[step[0]-1][step[1]]],[[step[0]][step[1] + 1]], [[step[0]][step[1] - 1]]]
+    function NextStep(){
+      
+      check = "Pass not found";
+      console.log(step);
+      let movements = [[[step[0]],[step[1] +1]],[[step[0]],[step[1] -1]]];
+      if(maze[step[0] -1]){
+        movements.push([[step[0] -1],[step[1]]]);
+      }
+      if(maze[step[0] +1]){
+        movements.push([[step[0] +1],[step[1]]]);
+      }
+          console.log("movements",movements);
+
+      let temp = maze[step[0]].split("");
+      temp[step[1]] = "X";
+      maze[step[0]] = temp.join("");
+      // console.log("maze",maze[step[0]], maze);
+      
+      path.push([step[0],step[1]]);
+      // console.log(path);
+
+      
+      movements.forEach(function(elem, index, arr){
+        // check = 0;
+        if(maze[elem[0]][elem[1]] == '<'|| maze[elem[0]][elem[1]] == '>'|| maze[elem[0]][elem[1]] == '^'|| maze[elem[0]][elem[1]] == 'v'){
+          check = "Path found";
+          // console.log("finish",path);
+        }
+        else if(maze[elem[0]][elem[1]] == ' '){
+          if(check == "Pass not found"){
+            // console.log('next step found', elem);
+            // maze[elem[0]][elem[1]] = "#";
+            // console.log(typeof maze[elem[0]][elem[1]]);
+           
+            
+            // ???? Just for Beauty )))))
+            // let temp = maze[elem[0]].split("");
+            // temp[elem[1]] = "X";
+            // maze[elem[0]] = temp.join("");
+            // console.log("maze",maze[0], maze);
+            // ???? Just for Beauty )))))
+
+                       // console.log('1', step);
+            step[0] = elem[0][0];
+            step[1] = elem[1][0];
+            // step = elem.slice();
+            // console.log('2', step);
+            
+            check = "Step found";
+  
+          }
+          else {
+            crossroads.push([elem[0][0],elem[1][0]]);
+            if(check == "Step found" || check =="Crossroad found"){
+              path.push("crossroad");
+            }
+            check = "Crossroad found";
+          }
+        }
+        else if(index == movements.length -1 && maze[elem[0]][elem[1]] != ' ' && check == "Pass not found" ){
+          
+          check = "Deadlock";
+          console.log("deadlock", path, check);
+        }
+        // else if(index == movements.length -1 && maze[elem[0]][elem[1]] != ' '){
+        //   if(check == "Path not found"){
+        //     console.log("Deadlock", maze[elem[0]][elem[1]]);
+        //     check = "Deadlock";
+        //   }
+        // }
+          
+        // console.log(check);
+        // console.log(maze[elem[0]][elem[1]]);\
+        return step;
+      })
+      // console.log('path:', path,'crossroads:', crossroads, "step", step, check, maze);
+      return path;
+      //  console.log(exit);
+    }
+    // NextStep();NextStep();NextStep();NextStep();
+    // if (check == "Deadlock"){
+
+    //   console.log(check, "found");
+    // }
+    while(check != "Deadlock" && check != "Path found"){
+      NextStep();
+      console.log('path:', path,'crossroads:', crossroads, "step", step, check, maze);
+      
+    }
+    
+  }
+
+  FindExit()
+  // if(exits.length > 0 || exits.length != 1 && exits[0].length !== 3)
+  //    exits.forEach(function(elem){
+  //    FindPath(elem);
+  // });
+  FindPath(exits[0]);
+ 
+  // return exits;
+  }
+  // console.log(escape([
+  //   '# #',
+  //   '   ',
+  //   '   ',
+  //   '#<#'
+  // ]));
   console.log(escape([
-    '# #',
-    ' ><',
-    '# #'
+    "#########################################",
+  "#<    #       #     #         # #   #   #",
+  "##### # ##### # ### # # ##### # # # ### #",
+  "# #   #   #   #   #   # #     #   #   # #",
+  "# # # ### # ########### # ####### # # # #",
+  "#   #   # # #       #   # #   #   # #   #",
+  "####### # # # ##### # ### # # # #########",
+  "#   #     # #     # #   #   # # #       #",
+  "# # ####### ### ### ##### ### # ####### #",
+  "# #             #   #     #   #   #   # #",
+  "# ############### ### ##### ##### # # # #",
+  "#               #     #   #   #   # #   #",
+  "##### ####### # ######### # # # ### #####",
+  "#   # #   #   # #         # # # #       #",
+  "# # # # # # ### # # ####### # # ### ### #",
+  "# # #   # # #     #   #     # #     #   #",
+  "# # ##### # # ####### # ##### ####### # #",
+  "# #     # # # #   # # #     # #       # #",
+  "# ##### ### # ### # # ##### # # ### ### #",
+  "#     #     #     #   #     #   #   #    ",
+  "#########################################"
   ]));
