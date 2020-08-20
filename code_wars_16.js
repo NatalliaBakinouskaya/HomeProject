@@ -104,7 +104,7 @@ function escape(maze) {
     function NextStep(){
       
       check = "Pass not found";
-      console.log(step);
+      // console.log(step);
       let movements = [[[step[0]],[step[1] +1]],[[step[0]],[step[1] -1]]];
       if(maze[step[0] -1]){
         movements.push([[step[0] -1],[step[1]]]);
@@ -112,7 +112,7 @@ function escape(maze) {
       if(maze[step[0] +1]){
         movements.push([[step[0] +1],[step[1]]]);
       }
-          console.log("movements",movements);
+          // console.log("movements",movements);
 
       let temp = maze[step[0]].split("");
       temp[step[1]] = "X";
@@ -161,9 +161,32 @@ function escape(maze) {
           }
         }
         else if(index == movements.length -1 && maze[elem[0]][elem[1]] != ' ' && check == "Pass not found" ){
+          if(crossroads.length > 0){
+            for(i = path.length -1; i >= 0; i--){
+              if(path[i] == 'crossroad'){
+                // console.log('bingo',i, path[i][0], path[i][1]);
+                path = path.slice(0, i);
+                // console.log(crossroads, crossroads[crossroads.length - 1][0]);
+                // path.push(crossroads[crossroads.length - 1].slice());
+                step = crossroads[crossroads.length - 1].slice();
+                crossroads.pop();
+                check = "Deadlock";
+                break;
+                // path[i][1] = crossroads[crossroads.length - 1][1];
+                // step[0] = path[i][0];
+                // step[1] = path[i][1]
+  
+              }
+            }
+
+          }
+          // else{
+          //   check = "Deadlock";
+          //   // console.log("deadlock", path, check);
+          // }
           
-          check = "Deadlock";
-          console.log("deadlock", path, check);
+          
+          
         }
         // else if(index == movements.length -1 && maze[elem[0]][elem[1]] != ' '){
         //   if(check == "Path not found"){
@@ -183,14 +206,20 @@ function escape(maze) {
     // NextStep();NextStep();NextStep();NextStep();
     // if (check == "Deadlock"){
 
-    //   console.log(check, "found");
+      // console.log(check, "found");
     // }
-    while(check != "Deadlock" && check != "Path found"){
+    // console.log(check, crossroads);
+    // return check;
+    // while(check != "Deadlock" && crossroads.length != 0 || check != "Path found"){
+      t = 0;
+      while(check != "Path found"){
       NextStep();
-      console.log('path:', path,'crossroads:', crossroads, "step", step, check, maze);
+      t++;
+      }
       
-    }
-    
+      
+      console.log('final path:', path,'crossroads:', crossroads, "step", step, check, t);
+
   }
 
   FindExit()
