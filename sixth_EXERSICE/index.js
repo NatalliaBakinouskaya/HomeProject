@@ -1,5 +1,6 @@
 // Телефонная книга
 var phoneBook = {};
+let phone_book = [];
 
 /**
  * @param {String} command
@@ -7,14 +8,12 @@ var phoneBook = {};
  */
 module.exports = function (command) {
     // function Phone(command){
-    let phone_book = [];
+    // let phone_book = [];
+    // console.log('start', phone_book);
     let command_name = command.split(' ')[0];
     
-    
-
-
     function Show(){
-        console.log(phone_book);
+        return phone_book;
     }
 
     function Add(){
@@ -38,25 +37,42 @@ module.exports = function (command) {
                         
                     }
                 }
-                return elem; 
             }
-            
+            return elem;
         });
         if(check == 0){
-            phone_book.push(name + ': ' + phone.join(', '));
+            phone_book.unshift(name + ': ' + phone.join(', '));
         }
-    
     return phone_book;
     }
     function REMOVE_PHONE(){
+        
+        command = command.split(' ');
+        
+        command.shift();
+        
         command = command.join('').split(',');
+        
         let res = false;
-        phone_book = phone_book.map(function(element){
+        phone_book = phone_book.map(function(element, index, array){
             if(element.includes(command)){
                 res = true;
+                
             }
-            return element.replace(command + ', ', '') || (command, '');
+           
+            element = element.replace(command + ', ', '');
+            element = element.replace(', ' + command, '');
+            element = element.replace(' ' + command, '');
+            
+             return element;
+
         })
+        phone_book = phone_book.filter(function(element){
+            if (element[element.length -1] !== ':'){
+                return element;
+            }
+        })  
+        console.log(phone_book);
         return res;
 
     }
@@ -68,29 +84,19 @@ switch(command_name){
     case 'REMOVE_PHONE':
         return REMOVE_PHONE();
 }
-
+phone_book = [];
+return phone_book ;
 }
 
-// let pb = module.exports()();
 
 
 // console.log(module.exports('REMOVE_PHONE 555-10-02'));
-// // console.log(module.exports('SHOW'));
-console.log(module.exports('ADD Adam 555-10-03'));
 // console.log(module.exports('SHOW'));
-// console.log(module.exports('ADD Ivan 555-10-01,555-10-03'));
+// console.log(module.exports('ADD Adam 555-10-03'));
+// console.log(module.exports('ADD Adam 555-10-09'));
 // console.log(module.exports('SHOW'));
-// console.log(module.exports('REMOVE_PHONE 555-20-01'));
+// console.log(module.exports('ADD Ivan 555-10-01, 555-10-03'));
 // console.log(module.exports('SHOW'));
-
-// console.log(pb('REMOVE_PHONE 555-10-02'));
-// console.log(pb('SHOW'));
-// console.log(pb('ADD Adam 555-10-03'));
-// console.log(pb('ADD Adam 555-10-05'));
-// console.log(pb('SHOW'));
-// console.log(pb('ADD Ivan 555-10-01,555-10-03'));
-// console.log(pb('SHOW'));
-// console.log(pb('REMOVE_PHONE 555-20-01'));
-// console.log(pb('SHOW'));
-
+// console.log(module.exports('REMOVE_PHONE 555-10-09'));
+// console.log(module.exports('SHOW'));
 
