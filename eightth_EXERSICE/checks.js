@@ -58,7 +58,7 @@ var result = lib.query(
 );
 
 // Сравниваем полученный результат с ожидаемым
-assert.deepEqual(result, [
+assert.deepStrictEqual(result, [
     { name: 'Сэм', gender: 'Мужской', email: 'luisazamora@example.com' },
     { name: 'Эмили', gender: 'Женский', email: 'example@example.com' },
     { name: 'Мэт', gender: 'Мужской', email: 'danamcgee@example.com' },

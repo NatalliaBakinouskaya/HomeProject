@@ -194,21 +194,79 @@ let [one, two, three] = S;
 //     return 24 * 60 * 60 (new Date () - date) / 1000;
 //  }
 //  console.log(getSecondsToday());
+// _________
+// // ___regular expressions___
+// tweet  = {};
+// tweet.text = 'Node.js, и модули, Джеймс о проблемах Node.js #nodejs #modules';
+// // console.log(/#[a-z0-9]+/gi.test(tweet.text));
+// Object.defineProperty(tweet, 'linkify', { 
+//     get: function() {
+//     return this.text.replace(/(#([\w]+))/gi, '<a href="$2">$1</a>');
+//     } });
+// // console.log(Object.getOwnPropertyDescriptor(tweet, 'linkify'));
+// // tweet.linkify;
+// console.log(tweet.linkify);
+// _____
 
-function formatDate(date){
-    let now = new Date();
-    date = new Date(date);
-    let diff = now - date;
-    let zeroD, zeroM, zeroY, zeroH, zeroMi;
-    date.getDate()< 9? zeroD = "0": zeroD ="";
-    date.getMonth()< 9? zeroM = "0": zeroM ="";
-    date.getYear() % 100 < 9? zeroY = "0": zeroY ="";
-    date.getHours()< 9? zeroH = "0": zeroH ="";
-    date.getMinutes()< 9? zeroMi = "0": zeroMi ="";
 
-    date.get 
-    return diff < 0? `It's future`:diff < 1000? "right now": diff < 60000? `${Math.round(diff / 1000)} sec ago`:diff < 3600000? `${Math.round(diff / 60000)} min ago`: `${zeroD}${date.getDate()}.${zeroM}${date.getMonth() + 1}.${zeroY}${date.getFullYear() % 1000} ${zeroH}${date.getHours()}:${zeroMi}${date.getMinutes()}`;
-    // console.log(diff);
- }
- console.log(formatDate("2020-09-29 1:50:00"));
- console.log(formatDate(new Date(new Date - 5 * 60 * 1000)));
+
+// ---functions--
+// function max(a, b) {
+//     b = b || -Infinity;
+//     return a > b ? a : b; }
+// console.log(0 === 0)
+
+// function getCartSum(price, count) { 
+//     count = count || 1;
+//     console.log(undefined||2);
+//     return price * count; }
+// console.log(getCartSum(5, 2));
+
+
+// function example() { 
+//     // return arguments[1]; // 12 
+//     // return arguments.length; // 2
+//     let text = '1, 2, 4'
+//     let arg = [].slice.call(text);
+//     return arg;
+// }
+// console.log(example(3, 12, 6));
+// ___function constructor___
+
+// var add = new Function('a', 'b', code);
+// let code = 'return a + b';
+// console.log(add(1, 2));
+
+// function getCartSum() { 
+//     arguments[1] = arguments[1] || 1;
+//     return arguments[0] * arguments[1]; 
+// }
+// console.log(getCartSum(2, 0 ));
+// function sum() {
+//     var a = arguments[0] || 0; 
+//     var b = arguments[1] || 0;
+//     return a * b; 
+// }
+// console.log(sum(1));
+// var text = 5;
+// console.log(text);
+// function greet() {
+    
+// return text++;
+// }
+// console.log(greet());
+// console.log(greet());
+// console.log(greet());
+
+
+var getDateString = (function () {
+    
+    function format(date) {
+        return date.toGMTString()
+    }
+    return function getDateString(date) { 
+        date = date || new Date();
+        return format(date);
+    }
+   
+}());
