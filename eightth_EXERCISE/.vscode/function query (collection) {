@@ -1,0 +1,50 @@
+function query (collection) {
+  var newArr = collection.slice();
+  var argumentsArr = [].slice.call(arguments);
+  argumentsArr.forEach(function (method, i) {
+    if (method.name == 'filterIn') {
+      newArr = method(newArr)
+    }
+  })
+  argumentsArr.forEach(function (method, i) {
+    if (method.name == 'select') {
+      newArr = method(newArr)
+    }
+  })
+  return newArr;
+}
+
+function select () {
+  var arr = [].slice.call(arguments)
+  return function select (coll) {
+    var arrObj = [];
+    for (var i = 0; i < coll.length; i++) {
+      var obj = {};
+      for (var j = 0; j < arr.length; j++) {
+        obj[arr[j]] = coll[i][arr[j]];
+      }
+      arrObj.push(obj);
+    }
+    return arrObj; 
+  }
+}
+
+function filterIn(property, values) {
+  return function filterIn (coll) {
+    var filteredArr = [];
+    for (var i = 0; i < coll.length; i++) {
+      for (var j = 0; j < values.length; j++) {
+        if (coll[i][property] == values[j]) {
+          filteredArr.push(coll[i]);
+        }
+      }
+    }
+    return filteredArr;
+  }
+}
+
+var lib = {
+    query: query,
+    select: select,
+    filterIn: filterIn
+};
