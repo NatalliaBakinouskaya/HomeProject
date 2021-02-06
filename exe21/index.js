@@ -4,8 +4,8 @@ module.exports = Collection;
  * Конструктор коллекции
  * @constructor
  */
-function Collection() {
-  this.arr = [];
+function Collection(something) {
+  this.arr = something || [];
 }
 
 
@@ -37,9 +37,13 @@ Collection.prototype.constructor = Collection;
 /**
  * Создание коллекции из массива значений
  */
-Collection.from = function (arr) {
-   let coll = new Collection();
-   coll.arr = arr;
-   return coll;
+// Collection.from = function (arr) {
+//    return new Collection(arr);
 
-};
+// };
+Collection.from = function (arr) {
+    return Object.create(Collection.prototype, {
+        arr: {value: arr, writable: true, enumerable: true, }
+    })
+ 
+ };
