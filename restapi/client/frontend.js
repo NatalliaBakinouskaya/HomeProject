@@ -1,13 +1,14 @@
 
 import Vue from 'https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.esm.browser.js'
 
-VisualViewport.component('loader', {
-    template:
-    <div style="display: flex; justify-content: center; aligh-items: senter">
+Vue.component('loader', {
+    template:`
+    <div style="display: flex; justify-content: center; aligh-items: center">
         <div class="spinner-border" role="status">
         <span class="visually-hidden">Loading...</span>
         </div>
     </div>
+    `
    
 })
 
@@ -56,6 +57,7 @@ new Vue({
         this.loading = true
         // console.log('Ready?')
         this.contacts = await request('/api/contacts')
+        this.loading = false
         
         // console.log(data)
 
