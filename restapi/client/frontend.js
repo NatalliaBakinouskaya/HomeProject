@@ -35,20 +35,29 @@ new Vue({
 
     },
     methods: {
-        createContact(){
+        async createContact(){
             const {...contact} = this.form
-            contact.name ? console.log(contact.name) : console.log('no name')
-            this.contacts.push({...contact, id: Date.now(), marked: false})
+
+            const newContact = await request('/api/contacts','POST', contact)
+            // console.log(response)
+            this.contacts.push(newContact)
+            // contact.name ? console.log(contact.name) : console.log('no name')
+            // this.contacts.push({...contact, id: Date.now(), marked: false})
             this.form.name = this.form.value = ''
         },
-        markContact(id){
+        async markContact(id){
     
             // const contact = this.contacts.find((c) => c.id == id)
-            const contact = this.contacts.find(c => c.id == id)
-            contact.marked = true;
-            console.log(contact.marked)
+            const contact = this.contacts.find(c => c.id === id)
+            const updated = await request (`/api/contacts/${id}`, 'PUT', {
+                ...contact,
+                marked: true
+            })
+            contact.marked = updated.marked;
+            // console.log(contact.marked)
         },
-        removeContact(id){
+        async removeContact(id){
+            await request(`/api/contacts/${id}`,'DELETE')
             this.contacts = this.contacts.filter(c => c.id !== id)
 
         }

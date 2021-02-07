@@ -13,18 +13,18 @@
 </head>
 <body>
     <div class="container pt-3" id="app" v-cloak>
-    <h1>REST API</h1>
-    <form class="form-inline mb-3" @submit.prevent="createContact">
-        <div class="form-group mr-5">
-            <label for="name" class="mr-3">Name</label>
-            <input type="text"class="form-control" id="name" v-model="form.name">
-        </div>
-        <div class="form-group mr-5">
-            <label for="value" class="mr-3">Value</label>
-            <input type="text" class="form-control" id="value"v-model="form.value">
-        </div>
-        <button class="btn btn-primary" type="submit" :disabled="!canCreate">Create</button>
-    </form>
+        <h1>REST API</h1>
+        <form class="form-inline mb-3" @submit.prevent="createContact">
+            <div class="form-group mr-5">
+                <label for="name" class="mr-3">Name</label>
+                <input type="text"class="form-control" id="name" v-model="form.name">
+            </div>
+            <div class="form-group mr-5">
+                <label for="value" class="mr-3">Value</label>
+                <input type="text" class="form-control" id="value"v-model="form.value">
+            </div>
+                <button class="btn btn-primary" type="submit" :disabled="!canCreate">Create</button>
+        </form>
     <div v-if="loading">
         <loader />
     </div>
